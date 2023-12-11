@@ -11,6 +11,11 @@ void D_DoomMain(void);
 
 void doomgeneric_Create(void *context)
 {
+	static bool initialized = false;
+
+	if (initialized)
+		return;
+	initialized = true;
 	UNUSED_PARAMETER(context);
 	// save arguments
 	myargc = 3;
@@ -18,7 +23,7 @@ void doomgeneric_Create(void *context)
 
 	myargv[0] = "/technically/path/to/exe";
 	myargv[1] = "-iwad";
-	myargv[2] = "/home/usr/docs/git/c/doom/doom1.wad";
+	myargv[2] = obs_module_file("doom1.wad");
 
 	M_FindResponseFile();
 

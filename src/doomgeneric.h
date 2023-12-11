@@ -9,7 +9,7 @@
 
 extern uint32_t *DG_ScreenBuffer;
 
-void doomgeneric_Create(void *context);
+void doomgeneric_Create();
 void doomgeneric_Tick();
 
 //Implement below functions for your platform

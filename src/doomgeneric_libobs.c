@@ -30,8 +30,6 @@ struct doom_source {
 	gs_texture_t *texture;
 };
 
-struct doom_source *g_src = NULL;
-
 static unsigned char convertToDoomKey(unsigned int key)
 {
 	switch (key) {
@@ -188,9 +186,9 @@ static void doom_source_render(void *data, gs_effect_t *effect)
 
 	uint8_t *ptr;
 	uint32_t linesize;
-	if (gs_texture_map(g_src->texture, &ptr, &linesize)) {
+	if (gs_texture_map(context->texture, &ptr, &linesize)) {
 		memcpy(ptr, buffer, DOOMGENERIC_RESX * DOOMGENERIC_RESY * 4);
-		gs_texture_unmap(g_src->texture);
+		gs_texture_unmap(context->texture);
 	}
 
 	const bool previous = gs_framebuffer_srgb_enabled();
@@ -217,16 +215,15 @@ static void *doom_source_create(obs_data_t *settings, obs_source_t *source)
 	obs_enter_graphics();
 	context->texture = gs_texture_create(DOOMGENERIC_RESX, DOOMGENERIC_RESY, GS_BGRX, 1, NULL, GS_DYNAMIC);
 	obs_leave_graphics();
-	doomgeneric_Create(context); //asdf
-	if (g_src == NULL) {
-		g_src = context;
-	}
+	doomgeneric_Create(context);
 	return context;
 }
 
-static void doom_source_destroy(void *unused)
+static void doom_source_destroy(void *data)
 {
-	UNUSED_PARAMETER(unused);
+	struct doom_source *context = data;
+	gs_texture_destroy(context->texture);
+	bfree(data);
 }
 
 static const char *doom_source_get_name(void *unused)
