@@ -3,8 +3,19 @@
 #include "doomgeneric.h"
 
 #include <stdio.h>
-#include <unistd.h>
+
+#if !defined(__APPLE__)
 #include <util/platform.h>
+#else
+#include <sys/time.h>
+
+inline uint64_t os_gettime_ns(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (uint64_t)tv.tv_sec * 1000000000 + (uint64_t)tv.tv_usec * 1000;
+}
+#endif
 #include <stdbool.h>
 #include <obs-module.h>
 
