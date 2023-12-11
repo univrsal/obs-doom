@@ -11,6 +11,8 @@ include(compilerconfig)
 include(defaults)
 include(helpers)
 
+option(LOCAL_INSTALLATION "Copy to ~/.config/obs-studio/plugins after build" OFF)
+
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 
 find_package(libobs REQUIRED)
@@ -34,6 +36,28 @@ if(ENABLE_QT)
                AUTORCC ON)
 endif()
 
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/plugin-main.c)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/plugin-main.c
+)
+
+add_subdirectory(src)
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
+
+if (LOCAL_INSTALLATION)
+    if (UNIX AND NOT APPLE)
+        # Installs into home directory
+        add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            # Copy to obs-studio dev environment for immediate testing
+            COMMAND "${CMAKE_COMMAND}" -E make_directory
+                    "$ENV{HOME}/.config/obs-studio/plugins/${CMAKE_PROJECT_NAME}/bin/64bit"
+            COMMAND "${CMAKE_COMMAND}" -E make_directory
+                    "$ENV{HOME}/.config/obs-studio/plugins/${CMAKE_PROJECT_NAME}/data"
+            COMMAND "${CMAKE_COMMAND}" -E copy
+                    "$<TARGET_FILE:${CMAKE_PROJECT_NAME}>"
+                    "$ENV{HOME}/.config/obs-studio/plugins/${CMAKE_PROJECT_NAME}/bin/64bit"
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory
+                    "${PROJECT_SOURCE_DIR}/data"
+                    "$ENV{HOME}/.config/obs-studio/plugins/${CMAKE_PROJECT_NAME}/data"
+        )
+endif()
+endif()

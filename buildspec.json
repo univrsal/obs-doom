@@ -33,15 +33,15 @@
     },
     "platformConfig": {
         "macos": {
-            "bundleId": "com.example.obs-plugintemplate"
+            "bundleId": "com.example.obs-doom"
         }
     },
-    "name": "obs-plugintemplate",
+    "name": "obs-doom",
     "version": "1.0.0",
-    "author": "Your Name Here",
-    "website": "https://example.com",
-    "email": "me@example.com",
+    "author": "univrsal",
+    "website": "https://vrsal.xyz",
+    "email": "contact@vrsal.xyz",
     "uuids": {
-        "windowsApp": "00000000-0000-0000-0000-000000000000"
+        "windowsApp": "00000000-0000-0000-0000-000000000001"
     }
 }
